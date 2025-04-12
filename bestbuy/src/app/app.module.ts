@@ -16,14 +16,14 @@ import { HttpClientModule } from '@angular/common/http';
     AppComponent,
     NavComponent,
     HomeComponent,
-    AllProdComponent,
     InCategoryComponent,
     InProductComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
+    AllProdComponent,
   ],
   providers: [
     provideClientHydration(withEventReplay())

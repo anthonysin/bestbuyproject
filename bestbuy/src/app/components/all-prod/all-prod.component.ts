@@ -1,41 +1,27 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import * as XLSX from 'xlsx';
+import { ProductService } from '../../services/product.service';
 import { Product } from '../../models/product.model';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-all-prod',
-  standalone: false,
   templateUrl: './all-prod.component.html',
-  styleUrl: './all-prod.component.scss'
+  styleUrls: ['./all-prod.component.scss'],
+  standalone: true,
+  imports: [CommonModule]
 })
-export class AllProdComponent {
+export class AllProdComponent implements OnInit {
   products: Product[] = [];
+  router: any;
 
-  constructor(private http: HttpClient) {}
+  constructor(private productService: ProductService) {}
 
   ngOnInit(): void {
-    this.loadExcelData();
+    this.products = this.productService.as_getAllProducts();
+    console.log(this.products);
   }
 
-  loadExcelData(): void {
-    this.http.get('assets/data/products.xlsx', { responseType: 'arraybuffer' })
-      .subscribe((data: ArrayBuffer) => {
-        const workbook = XLSX.read(data, { type: 'array' });
-        const sheetName = workbook.SheetNames[0];
-        const sheet = workbook.Sheets[sheetName];
-        const jsonData = XLSX.utils.sheet_to_json(sheet);
-
-        this.products = jsonData.map((item: any) => ({
-          Id: Number(item['Id']),
-          Name: item['Name'],
-          Description: item['Description'],
-          Price: Number(item['Price']),
-          Photo: item['Photo'],
-          Category: item['Category']
-        })) as Product[];
-
-        console.log(this.products);
-      });
+  viewProduct(id: number): void {
+    this.router.navigate(['/product', id]);
   }
 }
